@@ -70,13 +70,13 @@ public class MtsAutoTests {
     public void testContinueButton() {
         switchToMainWindow();
 
-        WebDriverWait wait = new WebDriverWait(driver, 10); // Увеличенное время ожидания
+        WebDriverWait wait = new WebDriverWait(driver, 10);
 
         WebElement phoneNumberField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='connection-phone']")));
         phoneNumberField.sendKeys("297777777");
 
         WebElement sumField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='connection-sum']")));
-        sumField.sendKeys("100"); // Вводим сумму 100
+        sumField.sendKeys("100");
 
         WebElement continueButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='pay-connection']/button")));
         continueButton.click();
