@@ -1,5 +1,7 @@
 package org.example;
 
+import io.qameta.allure.Description;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -46,6 +48,7 @@ public class MtsAutoTests {
     }
 
     @Test
+    @Description("Проверка заголовка блока 'Онлайн пополнение без комиссии'")
     public void testBlockTitle() {
         mainPage.switchToMainWindow();
         String actualText = mainPage.getBlockTitle().getText().replaceAll("\\s+", " ").trim();
@@ -53,12 +56,14 @@ public class MtsAutoTests {
     }
 
     @Test
+    @Description("Проверка наличия логотипов платежных систем")
     public void testPaymentSystemLogos() {
         mainPage.switchToMainWindow();
         assertFalse(paymentPage.getPaymentSystemLogos().isEmpty(), "Logos are not present");
     }
 
     @Test
+    @Description("Проверка ссылки 'Подробнее о сервисе'")
     public void testMoreInfoLink() {
         mainPage.switchToMainWindow();
         mainPage.clickMoreInfoLink();
@@ -67,6 +72,7 @@ public class MtsAutoTests {
     }
 
     @Test
+    @Description("Проверка кнопки 'Продолжить'")
     public void testContinueButton() {
         mainPage.switchToMainWindow();
         closeCookieBannerIfPresent();
@@ -81,6 +87,7 @@ public class MtsAutoTests {
     }
 
     @Test
+    @Description("Проверка полей оплаты услуги")
     public void testServicePaymentFields() {
         mainPage.switchToMainWindow();
         closeCookieBannerIfPresent();
@@ -97,10 +104,6 @@ public class MtsAutoTests {
         assertEquals(paymentPage.getPhoneNumberField().getAttribute("value"), "(29)777-77-77", "Incorrect phone number displayed");
 
         // Ожидание видимости и проверка надписей в незаполненных полях для ввода реквизитов карты
-//        System.out.println("Attempting to find card number label text...");
-//        String cardNumberLabelText = paymentPage.getCardNumberLabelText();
-//        assertEquals(cardNumberLabelText, "Номер карты", "Incorrect label for card number");
-
         System.out.println("Attempting to find card expiry label text...");
         WebDriverWait localWait = new WebDriverWait(driver, 5L); // Локальное время ожидания
         WebElement cardExpiryElement = localWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/app-root/div/div/div/app-payment-container/section/div/app-card-page/div/div[1]/app-card-input/form/div[1]/div[2]/div[1]/app-input/div/div/div[1]/input")));
@@ -120,6 +123,7 @@ public class MtsAutoTests {
     }
 
     @Test
+    @Description("Проверка полей для всех опций услуг")
     public void testServiceFieldsForAllOptions() {
         mainPage.switchToMainWindow();
         closeCookieBannerIfPresent();
@@ -140,6 +144,7 @@ public class MtsAutoTests {
         checkServiceFields("Задолженность", "Номер телефона", "Email для отправки");
     }
 
+    @Step("Проверка полей для услуги {service}")
     private void checkServiceFields(String service, String phoneLabel, String emailLabel) {
         mainPage.selectService(service);
         assertEquals(paymentPage.getPhoneNumberLabel().getText(), phoneLabel, "Incorrect label for phone number");
@@ -147,6 +152,7 @@ public class MtsAutoTests {
         assertEquals(paymentPage.getEmailLabel().getText(), emailLabel, "Incorrect label for email");
     }
 
+    @Step("Закрытие баннера cookie, если он присутствует")
     private void closeCookieBannerIfPresent() {
         try {
             WebElement cookieBanner = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("cookie")));
