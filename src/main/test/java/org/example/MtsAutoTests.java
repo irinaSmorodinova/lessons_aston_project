@@ -9,8 +9,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
@@ -22,7 +22,7 @@ public class MtsAutoTests {
     private MainPage mainPage;
     private PaymentPage paymentPage;
 
-    @BeforeClass
+    @BeforeMethod
     public void setUp() {
         System.setProperty("webdriver.chrome.driver", "C:\\chromedrivers\\chromedriver.exe");
 
@@ -40,7 +40,7 @@ public class MtsAutoTests {
         paymentPage = new PaymentPage(driver);
     }
 
-    @AfterClass
+    @AfterMethod
     public void tearDown() {
         if (driver != null) {
             driver.quit();
@@ -50,7 +50,6 @@ public class MtsAutoTests {
     @Test
     @Description("Проверка заголовка блока 'Онлайн пополнение без комиссии'")
     public void testBlockTitle() {
-        mainPage.switchToMainWindow();
         String actualText = mainPage.getBlockTitle().getText().replaceAll("\\s+", " ").trim();
         assertEquals(actualText, "Онлайн пополнение без комиссии");
     }
@@ -58,14 +57,12 @@ public class MtsAutoTests {
     @Test
     @Description("Проверка наличия логотипов платежных систем")
     public void testPaymentSystemLogos() {
-        mainPage.switchToMainWindow();
         assertFalse(paymentPage.getPaymentSystemLogos().isEmpty(), "Logos are not present");
     }
 
     @Test
     @Description("Проверка ссылки 'Подробнее о сервисе'")
     public void testMoreInfoLink() {
-        mainPage.switchToMainWindow();
         mainPage.clickMoreInfoLink();
         wait.until(ExpectedConditions.urlContains("poryadok-oplaty-i-bezopasnost-internet-platezhey"));
         assertTrue(driver.getCurrentUrl().contains("poryadok-oplaty-i-bezopasnost-internet-platezhey"), "More info link did not navigate to the correct page");
@@ -74,7 +71,6 @@ public class MtsAutoTests {
     @Test
     @Description("Проверка кнопки 'Продолжить'")
     public void testContinueButton() {
-        mainPage.switchToMainWindow();
         closeCookieBannerIfPresent();
         WebElement phoneNumberField = wait.until(ExpectedConditions.visibilityOf(paymentPage.getPhoneNumberField()));
         phoneNumberField.sendKeys("297777777");
@@ -89,7 +85,6 @@ public class MtsAutoTests {
     @Test
     @Description("Проверка полей оплаты услуги")
     public void testServicePaymentFields() {
-        mainPage.switchToMainWindow();
         closeCookieBannerIfPresent();
         WebElement phoneNumberField = wait.until(ExpectedConditions.visibilityOf(paymentPage.getPhoneNumberField()));
         phoneNumberField.sendKeys("297777777");
@@ -123,23 +118,32 @@ public class MtsAutoTests {
     }
 
     @Test
-    @Description("Проверка полей для всех опций услуг")
-    public void testServiceFieldsForAllOptions() {
-        mainPage.switchToMainWindow();
+    @Description("Проверка полей для услуги 'Услуги связи'")
+    public void testServiceFieldsForCommunicationServices() {
         closeCookieBannerIfPresent();
-
-        // Проверка полей для "Услуги связи"
         checkServiceFields("Услуги связи", "+375", "E-mail для отправки чека");
+    }
 
-        // Проверка полей для "Домашний интернет"
+    @Test
+    @Description("Проверка полей для услуги 'Домашний интернет'")
+    public void testServiceFieldsForHomeInternet() {
+        closeCookieBannerIfPresent();
         mainPage.selectService("Домашний интернет");
         checkServiceFields("Домашний интернет", "Номер телефона", "Email для отправки");
+    }
 
-        // Проверка полей для "Рассрочка"
+    @Test
+    @Description("Проверка полей для услуги 'Рассрочка'")
+    public void testServiceFieldsForInstallment() {
+        closeCookieBannerIfPresent();
         mainPage.selectService("Рассрочка");
         checkServiceFields("Рассрочка", "Номер телефона", "Email для отправки");
+    }
 
-        // Проверка полей для "Задолженность"
+    @Test
+    @Description("Проверка полей для услуги 'Задолженность'")
+    public void testServiceFieldsForDebt() {
+        closeCookieBannerIfPresent();
         mainPage.selectService("Задолженность");
         checkServiceFields("Задолженность", "Номер телефона", "Email для отправки");
     }
